@@ -78,10 +78,10 @@ def test_run_interactive_invalid_operation_shows_available_choices(monkeypatch, 
 
     captured = capsys.readouterr()
     assert "Invalid operation" in captured.out
-    assert "add or +" in captured.out
-    assert "subtract or -" in captured.out
-    assert "multiply or *" in captured.out
-    assert "divide or /" in captured.out
+    assert "add (+)" in captured.out
+    assert "subtract (-)" in captured.out
+    assert "multiply (*)" in captured.out
+    assert "divide (/)." in captured.out
 
 
 def test_run_interactive_invalid_number_prompts_user_again(monkeypatch, capsys):

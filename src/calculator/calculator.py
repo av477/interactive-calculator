@@ -2,9 +2,32 @@
 
 from __future__ import annotations
 
-from colorama import Fore, Style, init
+from colorama import Fore, init
 
 init(autoreset=True)
+
+
+VALID_OPERATIONS = {
+    "+": "add",
+    "-": "subtract",
+    "*": "multiply",
+    "/": "divide",
+    "add": "add",
+    "sum": "add",
+    "subtract": "subtract",
+    "minus": "subtract",
+    "multiply": "multiply",
+    "times": "multiply",
+    "divide": "divide",
+    "div": "divide",
+}
+
+OPERATION_HELP = [
+    ("add", "sum", "+"),
+    ("subtract", "minus", "-"),
+    ("multiply", "times", "*"),
+    ("divide", "div", "/"),
+]
 
 
 def add(a: float, b: float) -> float:
@@ -49,7 +72,7 @@ def calculate(a: float, operation: str, b: float) -> float:
 
     if op not in operations:
         raise ValueError(
-            "Invalid operation. Choose one of: add, subtract, multiply, divide."
+            "Invalid operation. Please choose one of: add (+), subtract (-), multiply (*), or divide (/)."
         )
 
     return operations[op](a, b)
@@ -81,10 +104,19 @@ def run_interactive() -> None:
     print("-------------------- Interactive Calculator --------------------")
     print("Available operations: add, subtract, multiply, divide")
     print("----------------------------------------------------------------")
-    print(Fore.YELLOW + "For addition, enter: add, sum, or +")
-    print(Fore.YELLOW + "For subtraction, enter: subtract, minus, or -")
-    print(Fore.YELLOW + "For multiplication, enter: multiply, times, or *")
-    print(Fore.YELLOW + "For division, enter: divide, div, or /")
+
+    for operation_name, alias, symbol in OPERATION_HELP:
+        if operation_name == "add":
+            color = Fore.CYAN
+        elif operation_name == "subtract":
+            color = Fore.YELLOW
+        elif operation_name == "multiply":
+            color = Fore.MAGENTA
+        else:
+            color = Fore.RED
+
+        print(color + f"For {operation_name}, enter: {operation_name}, {alias}, or {symbol}")
+
     print("----------------------------------------------------------------")
     print("Type 'quit' or 'exit' to exit the calculator.")
 
@@ -96,22 +128,10 @@ def run_interactive() -> None:
             break
 
         try:
-            if operation.lower() not in {
-                "+",
-                "-",
-                "*",
-                "/",
-                "add",
-                "subtract",
-                "multiply",
-                "divide",
-                "sum",
-                "minus",
-                "times",
-                "div",
-            }:
+            normalized_operation = operation.lower()
+            if normalized_operation not in VALID_OPERATIONS:
                 raise ValueError(
-                    "Invalid operation. Choose one of: add or +, subtract or -, multiply or *, divide or /."
+                    "Invalid operation. Please choose one of: add (+), subtract (-), multiply (*), or divide (/)."
                 )
 
             first_number = _parse_number(input("Enter the first number: ").strip(), "first")
