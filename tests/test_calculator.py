@@ -13,13 +13,16 @@ from calculator.calculator import (
     subtract,
 )
 
+# This module takes a higher-level integration perspective by testing the interactive CLI flow,
+# expression evaluation, and the script entry points. It checks how the calculator behaves from
+# the user's point of view rather than only validating raw arithmetic outputs.
 
 @pytest.mark.parametrize(
     ("a", "b", "expected"),
     [
-        (2, 3, 5),
-        (-2, 5, 3),
-        (0, 0, 0),
+        (12, 7, 19),
+        (-8, 4, -4),
+        (0, 9, 9),
     ],
 )
 def test_add(a, b, expected):
@@ -27,30 +30,30 @@ def test_add(a, b, expected):
 
 
 def test_subtract():
-    assert subtract(10, 4) == 6
+    assert subtract(18, 9) == 9
 
 
 def test_multiply():
-    assert multiply(4, 5) == 20
+    assert multiply(6, 7) == 42
 
 
 def test_divide():
-    assert divide(20, 4) == 5
+    assert divide(36, 6) == 6
 
 
 def test_divide_by_zero():
     with pytest.raises(ZeroDivisionError):
-        divide(10, 0)
+        divide(15, 0)
 
 
 @pytest.mark.parametrize(
     ("a", "op", "b", "expected"),
     [
-        (2, "+", 3, 5),
-        (10, "-", 4, 6),
-        (4, "*", 5, 20),
-        (20, "/", 4, 5),
-        (9, "add", 1, 10),
+        (12, "+", 8, 20),
+        (18, "-", 7, 11),
+        (9, "*", 6, 54),
+        (48, "/", 6, 8),
+        (14, "add", 3, 17),
     ],
 )
 def test_calculate(a, op, b, expected):

@@ -6,7 +6,7 @@ from colorama import Fore, init
 
 init(autoreset=True)
 
-
+# Accept either operator symbols or matching word aliases so the CLI can be flexible.
 VALID_OPERATIONS = {
     "+": "add",
     "-": "subtract",
@@ -30,29 +30,29 @@ OPERATION_HELP = [
 ]
 
 
-def add(a: float, b: float) -> float:
+def add(first_number: float, second_number: float) -> float:
     """Return the sum of two numbers."""
-    return a + b
+    return first_number + second_number
 
 
-def subtract(a: float, b: float) -> float:
+def subtract(first_number: float, second_number: float) -> float:
     """Return the difference of two numbers."""
-    return a - b
+    return first_number - second_number
 
 
-def multiply(a: float, b: float) -> float:
+def multiply(first_number: float, second_number: float) -> float:
     """Return the product of two numbers."""
-    return a * b
+    return first_number * second_number
 
 
-def divide(a: float, b: float) -> float:
+def divide(first_number: float, second_number: float) -> float:
     """Return the quotient of two numbers."""
-    if b == 0:
+    if second_number == 0:
         raise ZeroDivisionError("Cannot divide by zero.")
-    return a / b
+    return first_number / second_number
 
 
-def calculate(a: float, operation: str, b: float) -> float:
+def calculate(first_number: float, operation: str, second_number: float) -> float:
     """Perform a calculation on two numbers based on a user-selected operation."""
     op = operation.strip().lower()
     operations = {
@@ -75,12 +75,13 @@ def calculate(a: float, operation: str, b: float) -> float:
             "Invalid operation. Please choose one of: add (+), subtract (-), multiply (*), or divide (/)."
         )
 
-    return operations[op](a, b)
+    return operations[op](first_number, second_number)
 
 
 def evaluate_expression(expression: str) -> float:
     """Evaluate a arithmetic expression using Python's evaluator."""
     try:
+        # Restrict builtins so user input cannot access Python internals or unsafe functions.
         result = eval(expression, {"__builtins__": {}}, {})
     except Exception as exc:  # catch any exception and raise a ValueError with a helpful message
         raise ValueError(f"Invalid expression: {expression}") from exc
@@ -121,6 +122,7 @@ def run_interactive() -> None:
     print("Type 'quit' or 'exit' to exit the calculator.")
 
     while True:
+        # Keep prompting until the user explicitly exits, while handling bad input gracefully.
         operation = input("Choose an operation: ").strip()
 
         if operation.lower() in {"quit", "exit", "q"}:

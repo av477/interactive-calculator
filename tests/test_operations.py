@@ -2,14 +2,17 @@ import pytest
 
 from calculator.calculator import add, calculate, divide, multiply, subtract
 
+# This module focuses on the calculator's core arithmetic behavior from a unit-test perspective.
+# It verifies that each operation returns the correct result for valid inputs and raises the
+# expected error when invalid operations or division-by-zero cases are encountered.
 
 @pytest.mark.parametrize(
     ("a", "b", "expected"),
     [
-        (2, 3, 5),
-        (-2, 5, 3),
-        (0, 0, 0),
-        (10.5, 2.5, 13.0),
+        (9, 6, 15),
+        (-5, 11, 6),
+        (0, 4, 4),
+        (12.5, 3.5, 16.0),
     ],
 )
 def test_add(a, b, expected):
@@ -19,10 +22,10 @@ def test_add(a, b, expected):
 @pytest.mark.parametrize(
     ("a", "b", "expected"),
     [
-        (10, 4, 6),
-        (-2, 5, -7),
-        (0, 0, 0),
-        (12.5, 2.5, 10.0),
+        (17, 9, 8),
+        (-4, 6, -10),
+        (0, 5, -5),
+        (18.75, 2.25, 16.5),
     ],
 )
 def test_subtract(a, b, expected):
@@ -32,10 +35,10 @@ def test_subtract(a, b, expected):
 @pytest.mark.parametrize(
     ("a", "b", "expected"),
     [
-        (4, 5, 20),
-        (-3, 2, -6),
-        (0, 99, 0),
-        (2.5, 4, 10.0),
+        (7, 8, 56),
+        (-3, 9, -27),
+        (0, 13, 0),
+        (3.5, 4, 14.0),
     ],
 )
 def test_multiply(a, b, expected):
@@ -45,10 +48,10 @@ def test_multiply(a, b, expected):
 @pytest.mark.parametrize(
     ("a", "b", "expected"),
     [
-        (20, 4, 5),
-        (9, 3, 3),
-        (-12, 3, -4),
-        (7.5, 2.5, 3),
+        (45, 5, 9),
+        (24, 3, 8),
+        (-16, 4, -4),
+        (10.5, 2.5, 4.2),
     ],
 )
 def test_divide(a, b, expected):
@@ -58,9 +61,9 @@ def test_divide(a, b, expected):
 @pytest.mark.parametrize(
     ("a", "b"),
     [
-        (10, 0),
+        (22, 0),
         (0, 0),
-        (-5, 0),
+        (-8, 0),
     ],
 )
 def test_divide_by_zero(a, b):
@@ -71,18 +74,18 @@ def test_divide_by_zero(a, b):
 @pytest.mark.parametrize(
     ("a", "operation", "b", "expected"),
     [
-        (2, "+", 3, 5),
-        (10, "-", 4, 6),
-        (4, "*", 5, 20),
-        (20, "/", 4, 5),
-        (9, "add", 1, 10),
-        (9, "sum", 1, 10),
-        (9, "subtract", 1, 8),
-        (9, "minus", 1, 8),
-        (9, "multiply", 3, 27),
-        (9, "times", 3, 27),
-        (9, "divide", 3, 3),
-        (9, "div", 3, 3),
+        (11, "+", 5, 16),
+        (30, "-", 9, 21),
+        (6, "*", 8, 48),
+        (72, "/", 8, 9),
+        (17, "add", 4, 21),
+        (17, "sum", 4, 21),
+        (17, "subtract", 4, 13),
+        (17, "minus", 4, 13),
+        (9, "multiply", 5, 45),
+        (9, "times", 5, 45),
+        (18, "divide", 3, 6),
+        (18, "div", 3, 6),
     ],
 )
 def test_calculate(a, operation, b, expected):
@@ -92,10 +95,10 @@ def test_calculate(a, operation, b, expected):
 @pytest.mark.parametrize(
     ("a", "operation", "b"),
     [
-        (2, "mod", 3),
-        (2, "power", 3),
-        (2, "", 3),
-        (2, "sqrt", 3),
+        (13, "mod", 5),
+        (13, "power", 5),
+        (13, "", 5),
+        (13, "sqrt", 5),
     ],
 )
 def test_calculate_invalid_operation(a, operation, b):
