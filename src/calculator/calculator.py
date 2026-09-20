@@ -2,34 +2,57 @@
 
 from __future__ import annotations
 
-from colorama import Fore, Style, init
+from colorama import Fore, init
 
 init(autoreset=True)
 
+# Accept either operator symbols or matching word aliases so the CLI can be flexible.
+VALID_OPERATIONS = {
+    "+": "add",
+    "-": "subtract",
+    "*": "multiply",
+    "/": "divide",
+    "add": "add",
+    "sum": "add",
+    "subtract": "subtract",
+    "minus": "subtract",
+    "multiply": "multiply",
+    "times": "multiply",
+    "divide": "divide",
+    "div": "divide",
+}
 
-def add(a: float, b: float) -> float:
+OPERATION_HELP = [
+    ("add", "sum", "+"),
+    ("subtract", "minus", "-"),
+    ("multiply", "times", "*"),
+    ("divide", "div", "/"),
+]
+
+
+def add(first_number: float, second_number: float) -> float:
     """Return the sum of two numbers."""
-    return a + b
+    return first_number + second_number
 
 
-def subtract(a: float, b: float) -> float:
+def subtract(first_number: float, second_number: float) -> float:
     """Return the difference of two numbers."""
-    return a - b
+    return first_number - second_number
 
 
-def multiply(a: float, b: float) -> float:
+def multiply(first_number: float, second_number: float) -> float:
     """Return the product of two numbers."""
-    return a * b
+    return first_number * second_number
 
 
-def divide(a: float, b: float) -> float:
+def divide(first_number: float, second_number: float) -> float:
     """Return the quotient of two numbers."""
-    if b == 0:
+    if second_number == 0:
         raise ZeroDivisionError("Cannot divide by zero.")
-    return a / b
+    return first_number / second_number
 
 
-def calculate(a: float, operation: str, b: float) -> float:
+def calculate(first_number: float, operation: str, second_number: float) -> float:
     """Perform a calculation on two numbers based on a user-selected operation."""
     op = operation.strip().lower()
     operations = {
@@ -49,15 +72,16 @@ def calculate(a: float, operation: str, b: float) -> float:
 
     if op not in operations:
         raise ValueError(
-            "Invalid operation. Choose one of: add, subtract, multiply, divide."
+            "Invalid operation. Please choose one of: add (+), subtract (-), multiply (*), or divide (/)."
         )
 
-    return operations[op](a, b)
+    return operations[op](first_number, second_number)
 
 
 def evaluate_expression(expression: str) -> float:
     """Evaluate a arithmetic expression using Python's evaluator."""
     try:
+        # Restrict builtins so user input cannot access Python internals or unsafe functions.
         result = eval(expression, {"__builtins__": {}}, {})
     except Exception as exc:  # catch any exception and raise a ValueError with a helpful message
         raise ValueError(f"Invalid expression: {expression}") from exc
@@ -81,14 +105,24 @@ def run_interactive() -> None:
     print("-------------------- Interactive Calculator --------------------")
     print("Available operations: add, subtract, multiply, divide")
     print("----------------------------------------------------------------")
-    print(Fore.YELLOW + "For addition, enter: add, sum, or +")
-    print(Fore.YELLOW + "For subtraction, enter: subtract, minus, or -")
-    print(Fore.YELLOW + "For multiplication, enter: multiply, times, or *")
-    print(Fore.YELLOW + "For division, enter: divide, div, or /")
+
+    for operation_name, alias, symbol in OPERATION_HELP:
+        if operation_name == "add":
+            color = Fore.CYAN
+        elif operation_name == "subtract":
+            color = Fore.YELLOW
+        elif operation_name == "multiply":
+            color = Fore.MAGENTA
+        else:
+            color = Fore.RED
+
+        print(color + f"For {operation_name}, enter: {operation_name}, {alias}, or {symbol}")
+
     print("----------------------------------------------------------------")
     print("Type 'quit' or 'exit' to exit the calculator.")
 
     while True:
+        # Keep prompting until the user explicitly exits, while handling bad input gracefully.
         operation = input("Choose an operation: ").strip()
 
         if operation.lower() in {"quit", "exit", "q"}:
@@ -96,22 +130,10 @@ def run_interactive() -> None:
             break
 
         try:
-            if operation.lower() not in {
-                "+",
-                "-",
-                "*",
-                "/",
-                "add",
-                "subtract",
-                "multiply",
-                "divide",
-                "sum",
-                "minus",
-                "times",
-                "div",
-            }:
+            normalized_operation = operation.lower()
+            if normalized_operation not in VALID_OPERATIONS:
                 raise ValueError(
-                    "Invalid operation. Choose one of: add or +, subtract or -, multiply or *, divide or /."
+                    "Invalid operation. Please choose one of: add (+), subtract (-), multiply (*), or divide (/)."
                 )
 
             first_number = _parse_number(input("Enter the first number: ").strip(), "first")
