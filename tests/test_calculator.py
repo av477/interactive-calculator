@@ -1,8 +1,17 @@
 import io
+import runpy
+import sys
 
 import pytest
 
-from calculator.calculator import add, calculate, divide, multiply, subtract
+from calculator.calculator import (
+    add,
+    calculate,
+    divide,
+    evaluate_expression,
+    multiply,
+    subtract,
+)
 
 
 @pytest.mark.parametrize(
@@ -95,3 +104,40 @@ def test_run_interactive_invalid_number_prompts_user_again(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert "Invalid first number" in captured.out
     assert "Please enter a valid number" in captured.out
+
+
+def test_evaluate_expression_handles_valid_and_invalid_inputs():
+    assert evaluate_expression("2 + 3 * 4") == 14.0
+
+    with pytest.raises(ValueError, match="Invalid expression: bad_name"):
+        evaluate_expression("bad_name + 2")
+
+    with pytest.raises(ValueError, match="Expression did not produce a number"):
+        evaluate_expression("'hello'")
+
+
+def test_cli_module_runs_main(monkeypatch):
+    called = {"run": False}
+
+    def fake_run_interactive():
+        called["run"] = True
+
+    import calculator.calculator as calculator_module
+
+    monkeypatch.setattr(calculator_module, "run_interactive", fake_run_interactive)
+    sys.modules.pop("calculator.cli", None)
+    runpy.run_module("calculator.cli", run_name="__main__")
+
+    assert called["run"] is True
+
+
+def test_calculator_module_runs_main(monkeypatch, capsys):
+    responses = iter(["quit"])
+    monkeypatch.setattr("builtins.input", lambda prompt="": next(responses))
+
+    sys.modules.pop("calculator.calculator", None)
+    runpy.run_module("calculator.calculator", run_name="__main__")
+
+    captured = capsys.readouterr()
+    assert "Interactive Calculator" in captured.out
+    assert "Goodbye!" in captured.out
