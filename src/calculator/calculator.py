@@ -146,3 +146,6 @@ def run_interactive() -> None:
 
 if __name__ == "__main__":
     run_interactive()
+def _demo_uncovered_branch():
+    x = 1
+    return x + 1
